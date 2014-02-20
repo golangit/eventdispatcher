@@ -25,8 +25,6 @@ type EventDispatcher interface {
 	AddListener(eventName string, listener Listener)
 	AddSubscriber(subscriber EventSubscriber)
 	GetListeners(eventName string) []Listener
-	//RemoveListener(eventName string, listener Listener)
-	//RemoveSubscriber(subscriber EventSubscriber)
 }
 
 type eventdispatcher struct {
@@ -55,21 +53,6 @@ func (ed *eventdispatcher) AddListener(eventName string, listener Listener) {
 	ed.listeners[eventName] = append(ed.listeners[eventName], listener)
 }
 
-/*
-func (ed *eventdispatcher) RemoveListener(eventName string, listener Listener) {
-	if nil == ed.listeners[eventName] {
-		return
-	}
-
-	i := sort.Search(len(ed.listeners[eventName]), func(i int) bool { return &ed.listeners[eventName][i] == &listener })
-
-	if len(ed.listeners[eventName]) > i {
-		l := ed.listeners[eventName]
-		l = append(l[:i], l[i+1:])
-		ed.listeners[eventName] = l
-	}
-}
-*/
 func (ed *eventdispatcher) AddSubscriber(subscriber EventSubscriber) {
 	for eventName, listener := range subscriber.GetSubscribedEvents() {
 		ed.AddListener(eventName, listener)
@@ -77,11 +60,6 @@ func (ed *eventdispatcher) AddSubscriber(subscriber EventSubscriber) {
 	return
 }
 
-/*
-func (ed *eventdispatcher) RemoveSubscriber(subscriber EventSubscriber) {
-	return
-}
-*/
 func (ed *eventdispatcher) DoDispatch(listeners []Listener, eventName string, event event.Event) {
 	for k := range listeners {
 		listeners[k].Callable(event)
